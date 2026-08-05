@@ -1,95 +1,99 @@
-//! Binary Search Tree (BST) - insert, traversals, free
 #include <stdio.h>
 #include <stdlib.h>
 
 struct Node {
     int data;
-    struct Node *left, *right;
+    struct Node *left;
+    struct Node *right;
 };
 
-struct Node *createNode(int data){
+struct Node *createNode(int data) {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-    if(newNode == NULL){
-        printf("Memory allocation failed\n");
+
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
         exit(1);
     }
+
     newNode->data = data;
-    newNode->left = newNode->right = NULL;
+    newNode->left = NULL;
+    newNode->right = NULL;
+
     return newNode;
 }
 
-struct Node *insert(struct Node *root, int data){
-    if(root == NULL){
-        return createNode(data);
-    }
-    if(data < root->data){
-        root->left = insert(root->left, data);
-    } else if(data > root->data){
-        root->right = insert(root->right, data);
-    }
-    // equal values ignored (no duplicates)
+// Create Binary Tree recursively
+struct Node *createTree() {
+    int data;
+
+    printf("Enter data (-1 for no node): ");
+    scanf("%d", &data);
+
+    if (data == -1)
+        return NULL;
+
+    struct Node *root = createNode(data);
+
+    printf("Enter left child of %d\n", data);
+    root->left = createTree();
+
+    printf("Enter right child of %d\n", data);
+    root->right = createTree();
+
     return root;
 }
 
 void inorder(struct Node *root) {
-    if(root == NULL){
+    if (root == NULL)
         return;
-    }
+
     inorder(root->left);
     printf("%d ", root->data);
     inorder(root->right);
 }
 
 void preorder(struct Node *root) {
-    if(root == NULL){
+    if (root == NULL)
         return;
-    }
+
     printf("%d ", root->data);
     preorder(root->left);
     preorder(root->right);
 }
 
 void postorder(struct Node *root) {
-    if(root == NULL){
+    if (root == NULL)
         return;
-    }
+
     postorder(root->left);
     postorder(root->right);
     printf("%d ", root->data);
 }
 
 void freeTree(struct Node *root) {
-    if(root == NULL){
+    if (root == NULL)
         return;
-    }
+
     freeTree(root->left);
     freeTree(root->right);
     free(root);
 }
 
-int main(){
-    int n, data;
-    struct Node *root = NULL;
+int main() {
+    struct Node *root;
 
-    printf("How many values? ");
-    scanf("%d", &n);
+    printf("Create Binary Tree\n");
+    root = createTree();
 
-    printf("Enter %d values:\n", n);
-    for(int i = 0; i < n; i++){
-        scanf("%d", &data);
-        root = insert(root, data);
-    }
-
-    printf("Inorder: ");
+    printf("\nInorder Traversal: ");
     inorder(root);
-    printf("\n");
 
-    printf("Preorder: ");
+    printf("\nPreorder Traversal: ");
     preorder(root);
-    printf("\n");
 
-    printf("Postorder: ");
+    printf("\nPostorder Traversal: ");
     postorder(root);
+
     printf("\n");
 
     freeTree(root);
